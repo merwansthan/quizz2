@@ -16,29 +16,29 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mBoutonVrai;
     private Button mBoutonFaux;
-    private Button mBoutonSuivant;
-    private TextView mQuestionTextView;
-    private static final String TAG = "quizz";
-    private static final String KEY_INDEX = "index";
+        private Button mBoutonSuivant;
+        private TextView mQuestionTextView;
+        private static final String TAG = "quizz";
+        private static final String KEY_INDEX = "index";
 
-    private VraiFaux[] mTabQuestions = new VraiFaux[] {
-            new VraiFaux(R.string.question_oceans, true),
-            new VraiFaux(R.string.question_africa, false),
-            new VraiFaux(R.string.question_americas, true),
-            new VraiFaux(R.string.question_mideast, true),
-            new VraiFaux(R.string.question_asia, false)
-    };
+        private VraiFaux[] mTabQuestions = new VraiFaux[] {
+                new VraiFaux(R.string.question_oceans, true),
+                new VraiFaux(R.string.question_africa, false),
+                new VraiFaux(R.string.question_americas, true),
+                new VraiFaux(R.string.question_mideast, true),
+                new VraiFaux(R.string.question_asia, false)
+        };
 
-    private int mIndexActuel = 0;
+        private int mIndexActuel = 0;
 
-    private void majQuestion() {
-        int question = mTabQuestions[mIndexActuel].getmQuestion();
-        mQuestionTextView.setText(question);
-    }
+        private void majQuestion() {
+            int question = mTabQuestions[mIndexActuel].getmQuestion();
+            mQuestionTextView.setText(question);
+        }
 
-    private void verifieReponse(boolean userVrai) {
+        private void verifieReponse(boolean userVrai) {
         boolean reponseVraie = mTabQuestions[mIndexActuel].ismQuestionVraie();
-        //hellohmz
+
         int messReponseId = 0;
 
         messReponseId = (userVrai==reponseVraie) ? R.string.toast_correct : R.string.toast_faux;
