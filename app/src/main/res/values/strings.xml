@@ -13,7 +13,8 @@
 
     <string name="text_attention">Etes-vous sûr de vouloir faire cela ?</string>
     <string name="bouton_afficheAide">Afficher aide</string>
-    <string name="title_activity_aide">Aide </string>
+    <string name="toast_aide">C\'est pas bien de tricher !</string>
+    <string name="title_activity_aide">Aide</string>
 
 
 </resources>
