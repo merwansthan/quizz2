@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void verifieReponse(boolean userVrai) {
         boolean reponseVraie = mTabQuestions[mIndexActuel].ismQuestionVraie();
-
+        //hellohmz
         int messReponseId = 0;
 
         messReponseId = (userVrai==reponseVraie) ? R.string.toast_correct : R.string.toast_faux;
