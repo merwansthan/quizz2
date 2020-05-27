@@ -8,7 +8,7 @@
     android:gravity="center"
     android:orientation="vertical"
     tools:context="com.example.quizz.MainActivity"
-    tools:showIn="@layout/activity_main">
+    >
 
     <TextView
         android:id="@+id/questionTextView"

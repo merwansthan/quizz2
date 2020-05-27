@@ -18,10 +18,19 @@ public class MainActivity extends AppCompatActivity {
     private Button mBoutonVrai;
     private Button mBoutonFaux;
     private Button mBoutonSuivant;
-    private Button monBoutonAide;
+    private Button mBoutonAide;
     private TextView mQuestionTextView;
     private static final String TAG = "quizz";
     private static final String KEY_INDEX = "index";
+    private boolean mEstTricheur;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(data != null) {
+            mEstTricheur = data.getBooleanExtra(AideActivity.EXTRA_REPONSE_AFFICHEE, false);
+        } else return;
+    }
 
     private VraiFaux[] mTabQuestions = new VraiFaux[]{
             new VraiFaux(R.string.question_oceans, true),
@@ -43,7 +52,11 @@ public class MainActivity extends AppCompatActivity {
 
         int messReponseId = 0;
 
-        messReponseId = (userVrai == reponseVraie) ? R.string.toast_correct : R.string.toast_faux;
+        if(mEstTricheur) {
+            messReponseId = R.string.toast_aide;
+        } else {
+            messReponseId = (userVrai == reponseVraie) ? R.string.toast_correct : R.string.toast_faux;
+        }
 
         Toast.makeText(MainActivity.this, messReponseId, Toast.LENGTH_SHORT).show();
     }
@@ -85,17 +98,21 @@ public class MainActivity extends AppCompatActivity {
                 mIndexActuel = (mIndexActuel + 1) % mTabQuestions.length;
                 int question = mTabQuestions[mIndexActuel].getmQuestion();
                 mQuestionTextView.setText(question);
+                mEstTricheur = false;
             }
         });
 
         majQuestion();
 
-        monBoutonAide = (Button) findViewById(R.id.boutonAfficheAide);
-        monBoutonAide.setOnClickListener(new View.OnClickListener(){
+        mBoutonAide = (Button) findViewById(R.id.boutonAfficheAide);
+        mBoutonAide.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Intent intention = new Intent(MainActivity.this,AideActivity.class);
-                startActivity(intention);
+                Intent intention = new Intent(MainActivity.this, AideActivity.class);
+                boolean reponse_vraie = mTabQuestions[mIndexActuel].ismQuestionVraie();
+                intention.putExtra(AideActivity.EXTRA_REPONSE_VRAIE, reponse_vraie);
+                //startActivity(intention);
+                startActivityForResult(intention,2016);
             }
         });
 
