@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button mBoutonVrai;
@@ -22,13 +24,23 @@ public class MainActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
     private static final String TAG = "quizz";
     private static final String KEY_INDEX = "index";
-    private boolean mEstTricheur;
+    private static final String TRICHE_APRES_ROTATION = "triche_apres_rotation";
+    private static final String A_TRICHE = "a_triche";
+    private static final String LISTE_TRICHE = "triche";
+    private ArrayList<Integer> mTriche= new ArrayList<Integer>();
+
+    private void tricheDepuisListe() {
+        mQuestionTrichee[mIndexActuel] = mTriche.contains(mIndexActuel) ? true : false;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(data != null) {
-            mEstTricheur = data.getBooleanExtra(AideActivity.EXTRA_REPONSE_AFFICHEE, false);
+            mQuestionTrichee[mIndexActuel] = data.getBooleanExtra(AideActivity.EXTRA_REPONSE_AFFICHEE, false);
+            Log.d(TAG, "ce qu'on recoit :" + mQuestionTrichee[mIndexActuel]);
+            if (!mTriche.contains(mIndexActuel) && mQuestionTrichee[mIndexActuel] == true) {mTriche.add(mIndexActuel);}
+            else if(mQuestionTrichee[mIndexActuel] == false && mTriche.contains(mIndexActuel)) {mQuestionTrichee[mIndexActuel] = true;}
         } else return;
     }
 
@@ -39,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
             new VraiFaux(R.string.question_mideast, true),
             new VraiFaux(R.string.question_asia, false)
     };
+
+    private boolean[] mQuestionTrichee = new boolean[mTabQuestions.length];
 
     private int mIndexActuel = 0;
 
@@ -52,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         int messReponseId = 0;
 
-        if(mEstTricheur) {
+        if(mQuestionTrichee[mIndexActuel]) {
             messReponseId = R.string.toast_aide;
         } else {
             messReponseId = (userVrai == reponseVraie) ? R.string.toast_correct : R.string.toast_faux;
@@ -64,9 +78,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //on récupère la valeur de mIndexActuel
         if (savedInstanceState != null) {
             mIndexActuel = savedInstanceState.getInt(KEY_INDEX, 0);
+            mQuestionTrichee[mIndexActuel] = savedInstanceState.getBoolean(A_TRICHE, false);
+            mTriche = savedInstanceState.getIntegerArrayList(LISTE_TRICHE);
         }
         Log.d(TAG, "onCreate appelée");
         setContentView(R.layout.content_main);
@@ -98,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 mIndexActuel = (mIndexActuel + 1) % mTabQuestions.length;
                 int question = mTabQuestions[mIndexActuel].getmQuestion();
                 mQuestionTextView.setText(question);
-                mEstTricheur = false;
+                tricheDepuisListe();
             }
         });
 
@@ -153,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.i(TAG, "onSaveInstanceState");
         outState.putInt(KEY_INDEX, mIndexActuel);
+        outState.putIntegerArrayList(LISTE_TRICHE, mTriche);
+        outState.putBoolean(A_TRICHE, mQuestionTrichee[mIndexActuel]);
     }
 
 }
